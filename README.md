@@ -2,6 +2,16 @@
 
 [中文 README](https://github.com/NSFish/BangumiRenamer/blob/master/README_CN.md)
 
+### Installation
+
+It's recommended to use homebrew
+```shell
+brew tap NSFish/homebrew-tap
+brew install bangumi-renamer
+```
+
+Or you can download the executable file at the release page.
+
 ### Usage
 
 First, get bangumi series list from places like Wikipedia and save it as [source.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/source.txt), or any other name you prefer.

@@ -1,5 +1,15 @@
 # BangumiRenamer
 
+### 安装
+
+推荐使用 homebrew
+```shell
+brew tap NSFish/homebrew-tap
+brew install bangumi-renamer
+```
+
+或在 Release 页面自行下载。
+
 ### 使用方法
 
 从维基百科或[萌娘百科](https://zh.moegirl.org/zh-hans/Mainpage)等处获得番剧剧集列表，保存为 [source.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/source.txt)（或者其他喜欢的名字）。
