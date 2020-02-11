@@ -13,7 +13,7 @@
 最后执行
 
 ```shell
-bangumi-renamer -s /Path/to/source.txt -d /Path/to/seriesDirectory -p /Path/to/pattern.txt
+bangumi-renamer -s /Path/to/source.txt -d /Path/to/bangumiDirectory -p /Path/to/pattern.txt
 ```
 
-bangumi-renamer 将根据集数来逐一重命名 seriesDirectory 中的视频和字幕文件。
+bangumi-renamer 将根据集数来逐一重命名 bangumiDirectory 中的视频和字幕文件。
