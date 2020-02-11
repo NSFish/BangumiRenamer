@@ -148,10 +148,9 @@
 /// @param fileName 文件名
 + (NSString *)legalizeIfNeeded:(NSString *)fileName
 {
-    // 比如时间 7:30，替换成 7.30
-    fileName = [fileName stringByReplacingOccurrencesOfString:@":" withString:@"."];
-    // 用 \ 来替代路径分隔符 /，比如 "287（309） 工藤新一纽约事件（推理篇） B/S"
-    fileName = [fileName stringByReplacingOccurrencesOfString:@"/" withString:@"\\"];
+    // 用 : 来替代路径分隔符 /，比如 "287（309） 工藤新一纽约事件（推理篇） B/S"，在 Finder 中仍然会正常显示
+    // https://stackoverflow.com/a/60105599/2135264
+    fileName = [fileName stringByReplacingOccurrencesOfString:@"/" withString:@":"];
     
     return fileName;
 }
@@ -161,10 +160,5 @@
     return [[string componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
 }
 
-+ (NSArray<NSString *> *)patterns
-{
-    return @[@"Ep.[0-9]{3}",
-             @"\\[[0-9]{3}\\]"];
-}
-
 @end
+
