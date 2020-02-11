@@ -1,10 +1,10 @@
 # BangumiRenamer
 
-## Usage
+### Usage
 
-从 Wikipedia 或者百度百科等处获取柯南剧集列表，保存为 [source.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/source.txt)（或者其他喜欢的名字）。
+从 Wikipedia 或者百度百科等处获得番剧剧集列表，保存为 [source.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/source.txt)（或者其他喜欢的名字）。
 
-然后创建 [pattern.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/pattern.txt)，用正则表达式标识出 seriesDirectory 中各个文件名里剧集的集数，比如
+然后创建 [pattern.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/pattern.txt)，用正则表达式标识出文件名中剧集的集数，比如
 
 > Ep.[0-9]{3}
 >
