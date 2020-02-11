@@ -1,5 +1,9 @@
 # BangumiRenamer
 
+将下载来的番剧文件名规范化，也适用于电视剧剧集等。
+
+![](https://raw.githubusercontent.com/NSFish/TuChuang/master/pic/bangumi-renamer.gif)
+
 ### 安装
 
 推荐使用 homebrew

@@ -2,6 +2,10 @@
 
 [中文 README](https://github.com/NSFish/BangumiRenamer/blob/master/README_CN.md)
 
+Organize your downloaded bangumi series files, also works for tv-shows.
+
+![](https://raw.githubusercontent.com/NSFish/TuChuang/master/pic/bangumi-renamer.gif)
+
 ### Installation
 
 It's recommended to use homebrew
