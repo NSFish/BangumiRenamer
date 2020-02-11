@@ -1,5 +1,7 @@
 # BangumiRenamer
 
+[中文 README](https://github.com/NSFish/BangumiRenamer/blob/master/README_CN.md)
+
 ### Usage
 
 First, get bangumi series list from places like Wikipedia and save it as [source.txt](https://github.com/NSFish/BangumiRenamer/blob/master/TestCase/source.txt), or any other name you prefer.
