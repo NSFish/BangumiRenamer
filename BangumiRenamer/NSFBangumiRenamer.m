@@ -24,12 +24,14 @@
             // 首先固定取前三位，可能是 "1  "、"12 "、"175"
             // 特殊的如"11（11~12） 钢琴奏鸣曲《月光》杀人事件★"，则会是"11（"
             // 总之取前三位出来，过滤掉非数字字符就是剧集集数了
-            NSString *seriesNumber = [line substringToIndex:3];
+            // 2020.04.20 遇到了"第1话"这样不定长的剧集名称，这时就只能更通用地取第一个空格前的所有字符了
+            NSString *seriesNumber = [line componentsSeparatedByString:@" "].firstObject;
+            NSUInteger seriesNumberLength = seriesNumber.length;
             seriesNumber = [self trimString:seriesNumber with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
             NSString *newSeriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
             
             // 替换上补全后的集数
-            line = [line substringWithRange:NSMakeRange(seriesNumber.length, line.length - seriesNumber.length)];
+            line = [line substringWithRange:NSMakeRange(seriesNumberLength, line.length - seriesNumberLength)];
             line = [newSeriesNumber stringByAppendingString:line];
             
             seriesDict[newSeriesNumber] = line;
@@ -161,4 +163,5 @@
 }
 
 @end
+
 

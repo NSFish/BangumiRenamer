@@ -13,7 +13,7 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         if (argc < 3)
         {
-            printf("Usage: conan-series-renamer -source /Path/to/source.txt -d /Path/to/directoryToBeRenamed -p /Path/to/pattern.txt");
+            printf("Usage: bangumi-renamer -source /Path/to/source.txt -d /Path/to/directoryToBeRenamed -p /Path/to/pattern.txt");
             return 0;
         }
         
