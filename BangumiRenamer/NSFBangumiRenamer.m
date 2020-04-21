@@ -10,7 +10,29 @@
 
 @implementation NSFBangumiRenamer
 
-+ (NSDictionary<NSString*, NSString*> *)seriesFrom:(NSString *)sourceFilePath
++ (void)renameFilesIn:(NSString *)destDirectoryPath withSource:(NSString *)sourceFilePath pattern:(NSString *)patternFilePath
+{
+    NSString *content = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:patternFilePath]
+                                                 encoding:NSUTF8StringEncoding
+                                                    error:nil];
+    NSArray<NSString *> *patterns = [content componentsSeparatedByString:@"\n"];
+    
+    NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFilePath patterns:patterns];
+    NSArray<NSString *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:destDirectoryPath];
+    
+    [filesToBeRenamed enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
+        [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
+            BOOL succeeded = [self tryRenameFile:filePath pattern:pattern seriesDict:seriesDict];
+            if (succeeded)
+            {
+                *stop = YES;
+            }
+        }];
+    }];
+}
+
+#pragma mark - Private
++ (NSDictionary<NSString*, NSString*> *)seriesFrom:(NSString *)sourceFilePath patterns:(NSArray<NSString *> *)patterns
 {
     NSMutableDictionary<NSString*, NSString*> *seriesDict = [NSMutableDictionary dictionary];
     
@@ -21,24 +43,54 @@
     [lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
         if (line.length >= 3)
         {
-            // 首先固定取前三位，可能是 "1  "、"12 "、"175"
-            // 特殊的如"11（11~12） 钢琴奏鸣曲《月光》杀人事件★"，则会是"11（"
-            // 总之取前三位出来，过滤掉非数字字符就是剧集集数了
-            // 2020.04.20 遇到了"第1话"这样不定长的剧集名称，这时就只能更通用地取第一个空格前的所有字符了
-            NSString *seriesNumber = [line componentsSeparatedByString:@" "].firstObject;
-            NSUInteger seriesNumberLength = seriesNumber.length;
-            seriesNumber = [self trimString:seriesNumber with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
-            NSString *newSeriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
+            __block NSString *seriesNumberPart = nil;
+            [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
+                seriesNumberPart = [self tryExtractSeriesNumberPartFromFileName:line pattern:pattern];
+                if (seriesNumberPart)
+                {
+                    *stop = YES;
+                }
+            }];
             
-            // 替换上补全后的集数
-            line = [line substringWithRange:NSMakeRange(seriesNumberLength, line.length - seriesNumberLength)];
-            line = [newSeriesNumber stringByAppendingString:line];
-            
-            seriesDict[newSeriesNumber] = line;
+            if (seriesNumberPart)
+            {
+                NSString *seriesNumber = [self trimString:seriesNumberPart with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+                seriesNumber = [self trimString:seriesNumber with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+                seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
+                
+                // 替换上补全后的集数
+                NSString *fileName = [line stringByReplacingOccurrencesOfString:seriesNumberPart withString:@""];
+                // 移除文件名首尾的空格
+                fileName = [fileName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                fileName = [NSString stringWithFormat:@"%@ %@", seriesNumber, fileName];
+                
+                seriesDict[seriesNumber] = fileName;
+            }
+            else
+            {
+                // TODO: 如何处理无法识别出剧集的文件？
+            }
         }
     }];
     
     return seriesDict;
+}
+
++ (nullable NSString *)tryExtractSeriesNumberPartFromFileName:(NSString *)fileName pattern:(NSString *)pattern
+{
+    NSString *seriesNumberPart = nil;
+    
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRange range = [regex rangeOfFirstMatchInString:fileName
+                                             options:0
+                                               range:NSMakeRange(0, fileName.length)];
+    
+    if (range.location != NSNotFound)
+    {
+        seriesNumberPart = [fileName substringWithRange:range];
+    }
+    
+    return seriesNumberPart;
 }
 
 + (NSArray<NSString *> *)filesToBeRenamedIn:(NSString *)destDirectoryPath
@@ -65,28 +117,7 @@
     return filesToBeRenamed;
 }
 
-+ (void)renameFilesIn:(NSString *)destDirectoryPath withSource:(NSString *)sourceFilePath pattern:(NSString *)patternFilePath
-{
-    NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFilePath];
-    NSArray<NSString *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:destDirectoryPath];
-    
-    NSString *content = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:patternFilePath]
-                                                 encoding:NSUTF8StringEncoding
-                                                    error:nil];
-    NSArray<NSString *> *patterns = [content componentsSeparatedByString:@"\n"];
-    
-    [filesToBeRenamed enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
-        [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
-            BOOL succeeded = [self tryRenameFile:filePath withPattern:pattern withSeriesDict:seriesDict];
-            if (succeeded)
-            {
-                *stop = YES;
-            }
-        }];
-    }];
-}
-
-+ (BOOL)tryRenameFile:(NSString *)filePath withPattern:(NSString *)pattern withSeriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
++ (BOOL)tryRenameFile:(NSString *)filePath pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
 {
     __block BOOL succeeded = YES;
     
@@ -163,5 +194,6 @@
 }
 
 @end
+
 
 
