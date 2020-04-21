@@ -29,6 +29,8 @@
             }
         }];
     }];
+    
+    NSLog(@"Done.");
 }
 
 #pragma mark - Private
@@ -148,7 +150,11 @@
                                          stringByAppendingPathExtension:pathExtension];
             
             NSError *error = nil;
-            [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:correctFilePath error:&error];
+            // 若已经存在同名文件，说明该文件已经 Renamed 过了，直接跳过
+            if (![[NSFileManager defaultManager] fileExistsAtPath:correctFilePath])
+            {
+                [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:correctFilePath error:&error];
+            }
             
             if (error)
             {
