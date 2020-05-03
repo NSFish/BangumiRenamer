@@ -13,7 +13,16 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         if (argc < 3)
         {
-            printf("Usage: bangumi-renamer -source /Path/to/source.txt -d /Path/to/directoryToBeRenamed -p /Path/to/pattern.txt");
+            printf("usage: bangumi-renamer -s /Path/to/source.txt -d /Path/to/directoryToBeRenamed -p /Path/to/pattern.txt\n");
+            printf("options:\n");
+            printf("    -s, -source       file that holds the correct names\n");
+            printf("    -d, -directory    folder that contains files you wanna rename\n");
+            printf("    -p, -pattern      file that holds regular expressions that identifie the serial number of files to be renamed\n");
+            printf("\n");
+            printf("A simplest example would be:\n");
+            printf("bangumi-renamer -p /Path/to/pattern.txt\n");
+            printf("renamer will try to find and use ./source.txt along with pattern.txt to rename files in the current directory.\n");
+            
             return 0;
         }
         
