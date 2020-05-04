@@ -19,9 +19,6 @@ int main(int argc, const char * argv[]) {
             printf("    -d, -directory    directory that contains files you wanna rename\n");
             printf("    -p, -pattern      file that holds regular expressions that identifie the serial number of files to be renamed\n");
             printf("\n");
-            printf("A simplest example would be:\n");
-            printf("bangumi-renamer -p /Path/to/pattern.txt\n");
-            printf("renamer will try to find and use ./source.txt along with pattern.txt to rename files in the current directory.\n");
             
             return 0;
         }
