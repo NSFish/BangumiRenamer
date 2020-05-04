@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7043885C245F921D007D4D15 /* NSFSeriesNumberPart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */; };
 		70A43FAB23F34CEC00FD3EAE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FAA23F34CEC00FD3EAE /* main.m */; };
 		70A43FB323F34D2600FD3EAE /* NSFBangumiRenamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7043885A245F921D007D4D15 /* NSFSeriesNumberPart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFSeriesNumberPart.h; sourceTree = "<group>"; };
+		7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSFSeriesNumberPart.m; sourceTree = "<group>"; };
 		70A43FA723F34CEC00FD3EAE /* bangumi-renamer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "bangumi-renamer"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A43FAA23F34CEC00FD3EAE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFBangumiRenamer.h; sourceTree = "<group>"; };
@@ -63,6 +66,8 @@
 				70A43FAA23F34CEC00FD3EAE /* main.m */,
 				70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */,
 				70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */,
+				7043885A245F921D007D4D15 /* NSFSeriesNumberPart.h */,
+				7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */,
 			);
 			path = BangumiRenamer;
 			sourceTree = "<group>";
@@ -125,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A43FAB23F34CEC00FD3EAE /* main.m in Sources */,
+				7043885C245F921D007D4D15 /* NSFSeriesNumberPart.m in Sources */,
 				70A43FB323F34D2600FD3EAE /* NSFBangumiRenamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -56,7 +56,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d $(SRCROOT)/TestCase/Bangumi"
+            argument = "-d $(SRCROOT)/TestCase/Bangumi/"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

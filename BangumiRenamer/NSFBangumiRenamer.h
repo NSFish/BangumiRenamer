@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSFBangumiRenamer : NSObject
 
-+ (void)renameFilesIn:(NSString *)destDirectoryPath
-           withSource:(NSString *)sourceFilePath
-              pattern:(NSString *)patternFilePath;
++ (void)renameFilesIn:(NSURL *)destDirectoryURL
+           withSource:(NSURL *)sourceFileURL
+              pattern:(NSURL *)patternFileURL;
 
 @end
 

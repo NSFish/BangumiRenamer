@@ -7,22 +7,25 @@
 //
 
 #import "NSFBangumiRenamer.h"
+#import "NSFSeriesNumberPart.h"
 
 @implementation NSFBangumiRenamer
 
-+ (void)renameFilesIn:(NSString *)destDirectoryPath withSource:(NSString *)sourceFilePath pattern:(NSString *)patternFilePath
++ (void)renameFilesIn:(NSURL *)destDirectoryURL
+           withSource:(NSURL *)sourceFileURL
+              pattern:(NSURL *)patternFileURL
 {
-    NSString *content = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:patternFilePath]
+    NSString *content = [NSString stringWithContentsOfURL:patternFileURL
                                                  encoding:NSUTF8StringEncoding
                                                     error:nil];
     NSArray<NSString *> *patterns = [content componentsSeparatedByString:@"\n"];
     
-    NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFilePath patterns:patterns];
-    NSArray<NSString *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:destDirectoryPath];
+    NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFileURL patterns:patterns];
+    NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:destDirectoryURL];
     
-    [filesToBeRenamed enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
+    [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
-            BOOL succeeded = [self tryRenameFile:filePath pattern:pattern seriesDict:seriesDict];
+            BOOL succeeded = [self tryRenameFile:fileURL pattern:pattern seriesDict:seriesDict];
             if (succeeded)
             {
                 *stop = YES;
@@ -34,19 +37,25 @@
 }
 
 #pragma mark - Private
-+ (NSDictionary<NSString*, NSString*> *)seriesFrom:(NSString *)sourceFilePath patterns:(NSArray<NSString *> *)patterns
++ (NSDictionary<NSString*, NSString*> *)seriesFrom:(NSURL *)sourceFileURL patterns:(NSArray<NSString *> *)patterns
 {
     NSMutableDictionary<NSString*, NSString*> *seriesDict = [NSMutableDictionary dictionary];
     
-    NSString *content = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:sourceFilePath]
+    NSString *content = [NSString stringWithContentsOfURL:sourceFileURL
                                                  encoding:NSUTF8StringEncoding
                                                     error:nil];
     NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
     [lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
         if (line.length >= 3)
         {
-            __block NSString *seriesNumberPart = nil;
+            __block NSFSeriesNumberPart *seriesNumberPart = nil;
             [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
+                // 不直接返回 string，而专门构造了 NSFSeriesNumberPart，是为了把 part 所在的 NSRange 也传回来
+                // 比如 "11（11~12） 钢琴奏鸣曲《月光》杀人事件★"
+                // 用正则 "[0-9]{1,3}（"，取到的剧集数是最前面的 "11"，而剧集 part 是 "11（"
+                // "11" 经过填充后变成了 "011"
+                // 此时就可以用 "011" 替换掉 part.range 范围内的字符串，变成 "011（"
+                // 而不会影响到括号内部的 "11"
                 seriesNumberPart = [self tryExtractSeriesNumberPartFromFileName:line pattern:pattern];
                 if (seriesNumberPart)
                 {
@@ -54,23 +63,37 @@
                 }
             }];
             
-            if (seriesNumberPart)
+            BOOL cannotDetectSeriesNumber = NO;
+            if (!seriesNumberPart)
             {
-                NSString *seriesNumber = [self trimString:seriesNumberPart with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
-                seriesNumber = [self trimString:seriesNumber with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
-                seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
-                
-                // 替换上补全后的集数
-                NSString *fileName = [line stringByReplacingOccurrencesOfString:seriesNumberPart withString:@""];
-                // 移除文件名首尾的空格
-                fileName = [fileName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                fileName = [NSString stringWithFormat:@"%@ %@", seriesNumber, fileName];
-                
-                seriesDict[seriesNumber] = fileName;
+                cannotDetectSeriesNumber = YES;
+            }
+            
+            NSString *seriesNumber = [self trimString:seriesNumberPart.content with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+            if (seriesNumber.length == 0)
+            {
+                cannotDetectSeriesNumber = YES;
+            }
+            
+            if (cannotDetectSeriesNumber)
+            {
+                NSLog(@"无法从源文件中的这一行: [%@] 中识别出剧集数, 跳过", line);
             }
             else
             {
-                // TODO: 如何处理无法识别出剧集的文件？
+                NSString *oldSeriesNumber = seriesNumber;
+                NSString *newSeriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
+                
+                // 替换上补全后的集数
+                NSString *fileName = [line stringByReplacingOccurrencesOfString:oldSeriesNumber
+                                                                     withString:newSeriesNumber
+                                                                        options:0
+                                                                          range:seriesNumberPart.range];
+                
+                // 移除文件名首尾的空格
+                fileName = [fileName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                
+                seriesDict[newSeriesNumber] = fileName;
             }
         }
     }];
@@ -78,9 +101,9 @@
     return seriesDict;
 }
 
-+ (nullable NSString *)tryExtractSeriesNumberPartFromFileName:(NSString *)fileName pattern:(NSString *)pattern
++ (nullable NSFSeriesNumberPart *)tryExtractSeriesNumberPartFromFileName:(NSString *)fileName pattern:(NSString *)pattern
 {
-    NSString *seriesNumberPart = nil;
+    NSFSeriesNumberPart *part = nil;
     
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
     NSRange range = [regex rangeOfFirstMatchInString:fileName
@@ -89,28 +112,27 @@
     
     if (range.location != NSNotFound)
     {
-        seriesNumberPart = [fileName substringWithRange:range];
+        part = [NSFSeriesNumberPart partWithContent:[fileName substringWithRange:range] range:range];
     }
     
-    return seriesNumberPart;
+    return part;
 }
 
-+ (NSArray<NSString *> *)filesToBeRenamedIn:(NSString *)destDirectoryPath
++ (NSArray<NSURL *> *)filesToBeRenamedIn:(NSURL *)destDirectoryURL
 {
-    NSMutableArray<NSString *> *filesToBeRenamed = [NSMutableArray array];
+    NSMutableArray<NSURL *> *filesToBeRenamed = [NSMutableArray array];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray<NSString *> *contents = [fileManager contentsOfDirectoryAtPath:destDirectoryPath error:nil];
-    [contents enumerateObjectsUsingBlock:^(NSString *contentName, NSUInteger idx, BOOL *stop) {
-        BOOL flag = YES;
-        NSString *fullPath = [destDirectoryPath stringByAppendingPathComponent:contentName];
-        if ([fileManager fileExistsAtPath:fullPath isDirectory:&flag])
+    NSArray<NSURL *> *contents = [fileManager contentsOfDirectoryAtURL:destDirectoryURL includingPropertiesForKeys:@[] options:0 error:nil];
+    [contents enumerateObjectsUsingBlock:^(NSURL *content, NSUInteger idx, BOOL *stop) {
+        BOOL isDirectory = YES;
+        if ([fileManager fileExistsAtPath:content.path isDirectory:&isDirectory])
         {
-            if (!flag)
+            if (!isDirectory)// 过滤掉子文件夹
             {
-                if (![[contentName substringToIndex:1] isEqualToString:@"."]) // 过滤掉 .DS_Store
+                if (![[content lastPathComponent] hasPrefix:@"."]) // 过滤掉 .DS_Store 之类的隐藏文件
                 {
-                    [filesToBeRenamed addObject:fullPath];
+                    [filesToBeRenamed addObject:content];
                 }
             }
         }
@@ -119,9 +141,14 @@
     return filesToBeRenamed;
 }
 
-+ (BOOL)tryRenameFile:(NSString *)filePath pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
++ (BOOL)tryRenameFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
 {
     __block BOOL succeeded = YES;
+    // 拼接出正确的文件名要用
+    // [NSString stringByDeletingLastPathComponent:]
+    // [NSString stringByAppendingPathComponent:]
+    // 等方法，这里干脆直接用 path
+    NSString *filePath = fileURL.path;
     
     NSString *fileName = [filePath lastPathComponent];
     
