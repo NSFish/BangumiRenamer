@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5175CC54B3B21B1F2B31B995 /* libPods-UnitTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFE54475D62E711303D1F76D /* libPods-UnitTest.a */; };
 		7043885C245F921D007D4D15 /* NSFSeriesNumberPart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */; };
+		7082F80C24830243005793CC /* UnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7082F80B24830243005793CC /* UnitTest.swift */; };
+		7082F81124830294005793CC /* NSFBangumiRenamer.h in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */; };
+		7082F81224830294005793CC /* NSFBangumiRenamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */; };
+		7082F81324830294005793CC /* NSFSeriesNumberPart.h in Sources */ = {isa = PBXBuildFile; fileRef = 7043885A245F921D007D4D15 /* NSFSeriesNumberPart.h */; };
+		7082F81424830294005793CC /* NSFSeriesNumberPart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */; };
 		70A43FAB23F34CEC00FD3EAE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FAA23F34CEC00FD3EAE /* main.m */; };
 		70A43FB323F34D2600FD3EAE /* NSFBangumiRenamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */; };
 /* End PBXBuildFile section */
@@ -27,13 +33,28 @@
 /* Begin PBXFileReference section */
 		7043885A245F921D007D4D15 /* NSFSeriesNumberPart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFSeriesNumberPart.h; sourceTree = "<group>"; };
 		7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSFSeriesNumberPart.m; sourceTree = "<group>"; };
+		7082F80924830243005793CC /* UnitTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7082F80B24830243005793CC /* UnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitTest.swift; sourceTree = "<group>"; };
+		7082F80D24830243005793CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7082F83624830359005793CC /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		70A43FA723F34CEC00FD3EAE /* bangumi-renamer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "bangumi-renamer"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A43FAA23F34CEC00FD3EAE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFBangumiRenamer.h; sourceTree = "<group>"; };
 		70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFBangumiRenamer.m; sourceTree = "<group>"; };
+		72F9BC53EE71935ABB3F8EA7 /* Pods-UnitTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTest.debug.xcconfig"; path = "Target Support Files/Pods-UnitTest/Pods-UnitTest.debug.xcconfig"; sourceTree = "<group>"; };
+		C3C8AC26D482DC0B7E29B089 /* Pods-UnitTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTest.release.xcconfig"; path = "Target Support Files/Pods-UnitTest/Pods-UnitTest.release.xcconfig"; sourceTree = "<group>"; };
+		FFE54475D62E711303D1F76D /* libPods-UnitTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UnitTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7082F80624830243005793CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5175CC54B3B21B1F2B31B995 /* libPods-UnitTest.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		70A43FA423F34CEC00FD3EAE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -44,11 +65,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03D383F1B882B5F48436948C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				72F9BC53EE71935ABB3F8EA7 /* Pods-UnitTest.debug.xcconfig */,
+				C3C8AC26D482DC0B7E29B089 /* Pods-UnitTest.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		0F45AF5A833830E12380683B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FFE54475D62E711303D1F76D /* libPods-UnitTest.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7082F80A24830243005793CC /* UnitTest */ = {
+			isa = PBXGroup;
+			children = (
+				7082F80B24830243005793CC /* UnitTest.swift */,
+				7082F83824830407005793CC /* Supporting Files */,
+			);
+			path = UnitTest;
+			sourceTree = "<group>";
+		};
+		7082F83824830407005793CC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7082F80D24830243005793CC /* Info.plist */,
+				7082F83624830359005793CC /* Bridging-Header.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		70A43F9E23F34CEC00FD3EAE = {
 			isa = PBXGroup;
 			children = (
 				70A43FA923F34CEC00FD3EAE /* BangumiRenamer */,
+				7082F80A24830243005793CC /* UnitTest */,
 				70A43FA823F34CEC00FD3EAE /* Products */,
+				03D383F1B882B5F48436948C /* Pods */,
+				0F45AF5A833830E12380683B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				70A43FA723F34CEC00FD3EAE /* bangumi-renamer */,
+				7082F80924830243005793CC /* UnitTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +135,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7082F80824830243005793CC /* UnitTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7082F81024830243005793CC /* Build configuration list for PBXNativeTarget "UnitTest" */;
+			buildPhases = (
+				695F61B37BF6615CB9796EEA /* [CP] Check Pods Manifest.lock */,
+				7082F80524830243005793CC /* Sources */,
+				7082F80624830243005793CC /* Frameworks */,
+				7082F80724830243005793CC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnitTest;
+			productName = UnitTest;
+			productReference = 7082F80924830243005793CC /* UnitTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		70A43FA623F34CEC00FD3EAE /* BangumiRenamer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 70A43FAE23F34CEC00FD3EAE /* Build configuration list for PBXNativeTarget "BangumiRenamer" */;
@@ -98,9 +176,13 @@
 		70A43F9F23F34CEC00FD3EAE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = nsfish;
 				TargetAttributes = {
+					7082F80824830243005793CC = {
+						CreatedOnToolsVersion = 11.5;
+					};
 					70A43FA623F34CEC00FD3EAE = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -120,11 +202,59 @@
 			projectRoot = "";
 			targets = (
 				70A43FA623F34CEC00FD3EAE /* BangumiRenamer */,
+				7082F80824830243005793CC /* UnitTest */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		7082F80724830243005793CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		695F61B37BF6615CB9796EEA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UnitTest-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		7082F80524830243005793CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7082F81124830294005793CC /* NSFBangumiRenamer.h in Sources */,
+				7082F81224830294005793CC /* NSFBangumiRenamer.m in Sources */,
+				7082F81324830294005793CC /* NSFSeriesNumberPart.h in Sources */,
+				7082F81424830294005793CC /* NSFSeriesNumberPart.m in Sources */,
+				7082F80C24830243005793CC /* UnitTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		70A43FA323F34CEC00FD3EAE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -138,6 +268,48 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		7082F80E24830243005793CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 72F9BC53EE71935ABB3F8EA7 /* Pods-UnitTest.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = UnitTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = nsfish.UnitTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "UnitTest/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7082F80F24830243005793CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3C8AC26D482DC0B7E29B089 /* Pods-UnitTest.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = UnitTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = nsfish.UnitTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "UnitTest/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		70A43FAC23F34CEC00FD3EAE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -266,6 +438,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7082F81024830243005793CC /* Build configuration list for PBXNativeTarget "UnitTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7082F80E24830243005793CC /* Debug */,
+				7082F80F24830243005793CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		70A43FA223F34CEC00FD3EAE /* Build configuration list for PBXProject "BangumiRenamer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
