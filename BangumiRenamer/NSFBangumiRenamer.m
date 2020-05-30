@@ -164,7 +164,11 @@
     else
     {
         NSString *string = [fileName substringWithRange:range];
-        NSString *seriesNumber = [self trimString:string with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+        // 1.4：原本的做法是
+        // NSString *seriesNumber = [self trimString:string with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+        // 这样就无法处理类似 "S02E01"，对应正则 "S02E[0-9]{2}" 这样从文件名中匹配出的部分包含不止一个数字的 case
+        // 考虑到剧集总是在最后的，取最后一个数字
+        NSString *seriesNumber = [[string componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] lastObject];
         seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
         
         NSString *correctFileName = seriesDict[seriesNumber];
