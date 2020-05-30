@@ -101,7 +101,7 @@ int main(int argc, const char * argv[]) {
         [NSFBangumiRenamer renameFilesIn:destDirectoryURL
                               withSource:sourceFileURL
                                  pattern:patternFileURL
-                                  dryrun:YES];
+                                  dryrun:NO];
     }
     
     return 0;
