@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-s $(SRCROOT)/TestCase/source.txt"
+            argument = "-s $(SRCROOT)/TestCase/Bangumi/conan/source.txt"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

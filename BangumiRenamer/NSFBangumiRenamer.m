@@ -14,29 +14,46 @@ NSUInteger g_seriesCount = 0;
 
 @implementation NSFBangumiRenamer
 
-+ (void)renameFilesIn:(NSURL *)destDirectoryURL
-           withSource:(NSURL *)sourceFileURL
-              pattern:(NSURL *)patternFileURL
++ (NSArray<NSString *> *)renameFilesIn:(NSURL *)directoryURL
+                            withSource:(NSURL *)sourceFileURL
+                               pattern:(NSURL *)patternFileURL
+                                dryrun:(BOOL)dryrun
 {
+    NSMutableArray<NSString *> *fileNames = [NSMutableArray array];
+    
     NSString *content = [NSString stringWithContentsOfURL:patternFileURL
                                                  encoding:NSUTF8StringEncoding
                                                     error:nil];
     NSArray<NSString *> *patterns = [content componentsSeparatedByString:@"\n"];
     
     NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFileURL patterns:patterns];
-    NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:destDirectoryURL];
+    NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
-            BOOL succeeded = [self tryRenameFile:fileURL pattern:pattern seriesDict:seriesDict];
-            if (succeeded)
+            NSString *newFileName = [self figureOutNewNameOfFile:fileURL pattern:pattern seriesDict:seriesDict];
+            if (newFileName)
             {
-                *stop = YES;
+                if (dryrun)
+                {
+                    [fileNames addObject:newFileName];
+                    *stop = YES;
+                }
+                else
+                {
+                    BOOL succeeded = [self tryRenameFile:fileURL withNewName:newFileName];
+                    if (succeeded)
+                    {
+                        *stop = YES;
+                    }
+                }
             }
         }];
     }];
     
     NSLog(@"Done.");
+    
+    return fileNames;
 }
 
 #pragma mark - Private
@@ -145,27 +162,18 @@ NSUInteger g_seriesCount = 0;
     return filesToBeRenamed;
 }
 
-+ (BOOL)tryRenameFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
++ (NSString *)figureOutNewNameOfFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
+//+ (BOOL)tryRenameFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
 {
-    __block BOOL succeeded = YES;
-    // 拼接出正确的文件名要用
-    // [NSString stringByDeletingLastPathComponent:]
-    // [NSString stringByAppendingPathComponent:]
-    // 等方法，这里干脆直接用 path
-    NSString *filePath = fileURL.path;
-    
-    NSString *fileName = [filePath lastPathComponent];
+    NSString *newFileName = nil;
+    NSString *fileName = [fileURL lastPathComponent];
     
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
     NSRange range = [regex rangeOfFirstMatchInString:fileName
                                              options:0
                                                range:NSMakeRange(0, fileName.length)];
     
-    if (range.location == NSNotFound)
-    {
-        succeeded = NO;
-    }
-    else
+    if (range.location != NSNotFound)
     {
         NSString *string = [fileName substringWithRange:range];
         // 1.4：原本的做法是
@@ -179,25 +187,38 @@ NSUInteger g_seriesCount = 0;
         correctFileName = [self legalizeIfNeeded:correctFileName];
         if (correctFileName.length > 0)
         {
-            NSString *pathExtension = [filePath pathExtension];
-            NSString *correctFilePath = [[[filePath stringByDeletingLastPathComponent]
-                                          stringByAppendingPathComponent:correctFileName]
-                                         stringByAppendingPathExtension:pathExtension];
-            
-            NSError *error = nil;
-            // 若已经存在同名文件，说明该文件已经 Renamed 过了，直接跳过
-            if (![[NSFileManager defaultManager] fileExistsAtPath:correctFilePath])
-            {
-                [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:correctFilePath error:&error];
-            }
-            
-            if (error)
-            {
-                NSLog(@"Rename file at %@ failed, error: %@", filePath, error);
-                
-                succeeded = NO;
-            }
+            newFileName = correctFileName;
         }
+    }
+    
+    return newFileName;
+}
+
++ (BOOL)tryRenameFile:(NSURL *)fileURL withNewName:(NSString *)newFileName
+{
+    BOOL succeeded = YES;
+    
+    // 拼接出正确的文件名要用
+    // [NSString stringByDeletingLastPathComponent:]
+    // [NSString stringByAppendingPathComponent:]
+    // 等方法，这里干脆直接用 path
+    NSString *filePath = fileURL.path;
+    NSString *pathExtension = [filePath pathExtension];
+    NSString *correctFilePath = [[[filePath stringByDeletingLastPathComponent]
+                                  stringByAppendingPathComponent:newFileName]
+                                 stringByAppendingPathExtension:pathExtension];
+    
+    NSError *error = nil;
+    // 若已经存在同名文件，说明该文件已经 Renamed 过了，直接跳过
+    if (![[NSFileManager defaultManager] fileExistsAtPath:correctFilePath])
+    {
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:correctFilePath error:&error];
+    }
+    
+    if (error)
+    {
+        NSLog(@"Rename file at %@ failed, error: %@", filePath, error);
+        succeeded = NO;
     }
     
     return succeeded;
@@ -235,6 +256,7 @@ NSUInteger g_seriesCount = 0;
 }
 
 @end
+
 
 
 
