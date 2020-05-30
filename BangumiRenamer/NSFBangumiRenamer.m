@@ -9,6 +9,9 @@
 #import "NSFBangumiRenamer.h"
 #import "NSFSeriesNumberPart.h"
 
+// 从 source.txt 中读取到的剧集名称数，用于判断是否需要为剧集数补 0
+NSUInteger g_seriesCount = 0;
+
 @implementation NSFBangumiRenamer
 
 + (void)renameFilesIn:(NSURL *)destDirectoryURL
@@ -45,6 +48,7 @@
                                                  encoding:NSUTF8StringEncoding
                                                     error:nil];
     NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
+    g_seriesCount = lines.count;
     [lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
         if (line.length >= 3)
         {
@@ -200,12 +204,12 @@
 }
 
 #pragma mark - Helper
-/// 将不足三位数的剧集集数补全
+/// 如果 source.txt 中的剧集名超过三位数，则将传入的不足三位数的剧集集数补全
 /// @param seriesNumber 剧集集数
 + (NSString *)fillInSeriesNumberIfNeeded:(NSString *)seriesNumber
 {
-    const NSUInteger kFormatSeriesNumberLength = 3;
-    NSUInteger length = kFormatSeriesNumberLength - seriesNumber.length;
+    NSUInteger formatSeriesNumberLength = g_seriesCount >= 100 ? 3 : 2;
+    NSUInteger length = formatSeriesNumberLength - seriesNumber.length;
     for (NSUInteger i = 0; i < length; ++i)
     {
         seriesNumber = [@"0" stringByAppendingString:seriesNumber];
@@ -231,6 +235,7 @@
 }
 
 @end
+
 
 
 
