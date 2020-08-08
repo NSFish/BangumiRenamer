@@ -51,7 +51,7 @@ NSUInteger g_seriesCount = 0;
         }];
     }];
     
-    NSLog(@"Done.");
+    printf("Done.\n");
     
     return fileNames;
 }
@@ -102,11 +102,10 @@ NSUInteger g_seriesCount = 0;
             }
             else
             {
-                NSString *oldSeriesNumber = seriesNumber;
                 NSString *newSeriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
                 
                 // 替换上补全后的集数
-                NSString *fileName = [line stringByReplacingOccurrencesOfString:oldSeriesNumber
+                NSString *fileName = [line stringByReplacingOccurrencesOfString:seriesNumberPart.content
                                                                      withString:newSeriesNumber
                                                                         options:0
                                                                           range:seriesNumberPart.range];
