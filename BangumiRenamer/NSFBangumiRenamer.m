@@ -142,27 +142,42 @@ NSUInteger g_seriesCount = 0;
 {
     NSMutableArray<NSURL *> *filesToBeRenamed = [NSMutableArray array];
     
+    // 将 destDirectoryURL 下包括子文件夹在内的所有文件一口气读取出来
+    // https://stackoverflow.com/a/5750519
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray<NSURL *> *contents = [fileManager contentsOfDirectoryAtURL:destDirectoryURL includingPropertiesForKeys:@[] options:0 error:nil];
-    [contents enumerateObjectsUsingBlock:^(NSURL *content, NSUInteger idx, BOOL *stop) {
-        BOOL isDirectory = YES;
-        if ([fileManager fileExistsAtPath:content.path isDirectory:&isDirectory])
-        {
-            if (!isDirectory)// 过滤掉子文件夹
-            {
-                if (![[content lastPathComponent] hasPrefix:@"."]) // 过滤掉 .DS_Store 之类的隐藏文件
-                {
-                    [filesToBeRenamed addObject:content];
-                }
-            }
-        }
+    NSDirectoryEnumerator *enumerator = [fileManager
+                                         enumeratorAtURL:destDirectoryURL
+                                         includingPropertiesForKeys:@[NSURLIsDirectoryKey]
+                                         options:0
+                                         errorHandler:^BOOL(NSURL *url, NSError *error) {
+        return YES;
     }];
     
+    for (NSURL *url in enumerator)
+    {
+        NSError *error = nil;
+        NSNumber *isDirectory = nil;
+        if (![url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
+            // handle error
+        }
+        else if (![isDirectory boolValue])
+        {
+            if (![[url lastPathComponent] hasPrefix:@"."]) // 过滤掉 .DS_Store 之类的隐藏文件
+            {
+                [filesToBeRenamed addObject:url];
+            }
+            // No error and it’s not a directory; do something with the file
+        }
+        else
+        {
+            // 子文件夹，什么也不做
+        }
+    }
+
     return filesToBeRenamed;
 }
 
 + (NSString *)figureOutNewNameOfFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
-//+ (BOOL)tryRenameFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
 {
     NSString *newFileName = nil;
     NSString *fileName = [fileURL lastPathComponent];
@@ -255,6 +270,7 @@ NSUInteger g_seriesCount = 0;
 }
 
 @end
+
 
 
 
