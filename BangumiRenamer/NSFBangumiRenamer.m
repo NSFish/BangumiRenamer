@@ -173,11 +173,11 @@ NSUInteger g_seriesCount = 0;
             // 子文件夹，什么也不做
         }
     }
-
+    
     return filesToBeRenamed;
 }
 
-+ (NSString *)figureOutNewNameOfFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
++ (nullable NSString *)figureOutNewNameOfFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
 {
     NSString *newFileName = nil;
     NSString *fileName = [fileURL lastPathComponent];
@@ -194,7 +194,20 @@ NSUInteger g_seriesCount = 0;
         // NSString *seriesNumber = [self trimString:string with:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
         // 这样就无法处理类似 "S02E01"，对应正则 "S02E[0-9]{2}" 这样从文件名中匹配出的部分包含不止一个数字的 case
         // 考虑到剧集总是在最后的，取最后一个数字
-        NSString *seriesNumber = [[string componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] lastObject];
+        NSArray<NSString *> *array = [string componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+        __block NSString *seriesNumber = nil;
+        
+        // 1.4.3：原本的做法是
+        // NSString *seriesNumber = [[string componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] lastObject];
+        // 对于 "[001]" 这样的 case，会以 "[" 和 "]" 把字符串拆分成 ["", "001", ""]，导致取数组的 lastObject 取到空串
+        // 改为从后遍历，取第一个非空字符串
+        [array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *str, NSUInteger idx, BOOL *stop) {
+            if (str.length > 0)
+            {
+                seriesNumber = str;
+                *stop = YES;
+            }
+        }];
         seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
         
         NSString *correctFileName = seriesDict[seriesNumber];

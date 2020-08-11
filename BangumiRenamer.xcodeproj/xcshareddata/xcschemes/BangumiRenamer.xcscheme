@@ -52,15 +52,15 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-s $(SRCROOT)/TestCase/Bangumi/conan/source.txt"
+            argument = "-s /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/&#x704c;&#x7bee;&#x9ad8;&#x624b;/source.txt"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d $(SRCROOT)/TestCase/Bangumi/conan"
+            argument = "-d /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/&#x704c;&#x7bee;&#x9ad8;&#x624b;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-p $(SRCROOT)/TestCase/pattern.txt"
+            argument = "-p /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/pattern.txt"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
