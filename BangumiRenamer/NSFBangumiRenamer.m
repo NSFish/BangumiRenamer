@@ -28,6 +28,10 @@ NSUInteger g_seriesCount = 0;
     
     NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFileURL patterns:patterns];
     NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
+    // source.txt 很可能就在 directoryURL 下，提前过滤掉
+    NSMutableArray<NSURL *> *array = [filesToBeRenamed mutableCopy];
+    [array removeObject:sourceFileURL];
+    filesToBeRenamed = array;
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
@@ -50,9 +54,12 @@ NSUInteger g_seriesCount = 0;
             }
             else
             {
-                // 1.4.4:
-                // 不知道为什么内层的 enumerateObjectsUsingBlock: 遍历完后不会退出，只好手动退出
-                *innerStop = YES;
+                // 所有 pattern 都识别不出文件名中的剧集数，报错
+                if (innerIdx == patterns.count - 1)
+                {
+                    printf("Could not find series number from file: %s\n", [fileURL.lastPathComponent cStringUsingEncoding:NSUTF8StringEncoding]);
+                    *innerStop = YES;
+                }
             }
         }];
     }];
@@ -188,6 +195,11 @@ NSUInteger g_seriesCount = 0;
     NSString *newFileName = nil;
     NSString *fileName = [fileURL lastPathComponent];
     
+    if ([fileName containsString:@"特別編"])
+    {
+        NSLog(@"");
+    }
+    
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
     NSRange range = [regex rangeOfFirstMatchInString:fileName
                                              options:0
@@ -263,10 +275,16 @@ NSUInteger g_seriesCount = 0;
 + (NSString *)fillInSeriesNumberIfNeeded:(NSString *)seriesNumber
 {
     NSUInteger formatSeriesNumberLength = g_seriesCount >= 100 ? 3 : 2;
-    NSUInteger length = formatSeriesNumberLength - seriesNumber.length;
-    for (NSUInteger i = 0; i < length; ++i)
+    
+    // NSUInteger 总是大于 0，如果 formatSeriesNumberLength < seriesNumber.length
+    // 得到的 length 会是一个超级大的数字，导致循环无法退出
+    if (formatSeriesNumberLength > seriesNumber.length)
     {
-        seriesNumber = [@"0" stringByAppendingString:seriesNumber];
+        NSUInteger length = formatSeriesNumberLength - seriesNumber.length;
+        for (NSUInteger i = 0; i < length; ++i)
+        {
+            seriesNumber = [@"0" stringByAppendingString:seriesNumber];
+        }
     }
     
     return seriesNumber;
