@@ -30,8 +30,8 @@ NSUInteger g_seriesCount = 0;
     NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
     // source.txt 很可能就在 directoryURL 下，提前过滤掉
     NSMutableArray<NSURL *> *array = [filesToBeRenamed mutableCopy];
-    [array removeObject:sourceFileURL];
-    filesToBeRenamed = array;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastPathComponent != %@", sourceFileURL.lastPathComponent];
+    filesToBeRenamed = [array filteredArrayUsingPredicate:predicate];
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
