@@ -30,23 +30,29 @@ NSUInteger g_seriesCount = 0;
     NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
-        [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger idx, BOOL *stop) {
+        [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
             NSString *newFileName = [self figureOutNewNameOfFile:fileURL pattern:pattern seriesDict:seriesDict];
             if (newFileName)
             {
                 if (dryrun)
                 {
                     [fileNames addObject:newFileName];
-                    *stop = YES;
+                    *innerStop = YES;
                 }
                 else
                 {
                     BOOL succeeded = [self tryRenameFile:fileURL withNewName:newFileName];
                     if (succeeded)
                     {
-                        *stop = YES;
+                        *innerStop = YES;
                     }
                 }
+            }
+            else
+            {
+                // 1.4.4:
+                // 不知道为什么内层的 enumerateObjectsUsingBlock: 遍历完后不会退出，只好手动退出
+                *innerStop = YES;
             }
         }];
     }];
