@@ -107,7 +107,7 @@ NSUInteger g_seriesCount = 0;
             
             if (cannotDetectSeriesNumber)
             {
-                NSLog(@"无法从源文件中的这一行: [%@] 中识别出剧集数, 跳过", line);
+                printf("无法从源文件中的这一行: [%s] 中识别出剧集数, 跳过", [line UTF8String]);
             }
             else
             {
@@ -190,11 +190,6 @@ NSUInteger g_seriesCount = 0;
     NSString *newFileName = nil;
     NSString *fileName = [fileURL lastPathComponent];
     
-    if ([fileName containsString:@"特別編"])
-    {
-        NSLog(@"");
-    }
-    
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
     NSRange range = [regex rangeOfFirstMatchInString:fileName
                                              options:0
@@ -257,7 +252,7 @@ NSUInteger g_seriesCount = 0;
     
     if (error)
     {
-        NSLog(@"Rename file at %@ failed, error: %@", filePath, error);
+        printf("重命名文件 %s 失败，error: %s", [[filePath lastPathComponent] UTF8String], [[error localizedFailureReason] UTF8String]);
         succeeded = NO;
     }
     
