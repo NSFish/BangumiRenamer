@@ -28,10 +28,6 @@ NSUInteger g_seriesCount = 0;
     
     NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFileURL patterns:patterns];
     NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
-    // source.txt 很可能就在 directoryURL 下，提前过滤掉
-    NSMutableArray<NSURL *> *array = [filesToBeRenamed mutableCopy];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastPathComponent != %@", sourceFileURL.lastPathComponent];
-    filesToBeRenamed = [array filteredArrayUsingPredicate:predicate];
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
@@ -175,11 +171,10 @@ NSUInteger g_seriesCount = 0;
         }
         else if (![isDirectory boolValue])
         {
-            if (![[url lastPathComponent] hasPrefix:@"."]) // 过滤掉 .DS_Store 之类的隐藏文件
+            if ([self worthDeal:url])
             {
                 [filesToBeRenamed addObject:url];
             }
-            // No error and it’s not a directory; do something with the file
         }
         else
         {
@@ -304,6 +299,42 @@ NSUInteger g_seriesCount = 0;
 + (NSString *)trimString:(NSString *)string with:(NSCharacterSet *)characterSet
 {
     return [[string componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
+}
+
+
+// 根据 MIMEType 过滤掉非视频和字幕文件
+// .DS_Store 之类的隐藏文件也在其中，无须再单独处理
++ (BOOL)worthDeal:(NSURL *)url
+{
+    NSString *MIMEType = nil;
+    
+    // macOS 下 mkv 文件和字幕文件返回的 MIMEType 都是 null，只好硬编码了
+    NSString *const kVideo = @"video";
+    NSString *const kSubtitles = @"subtitles";
+    NSString *pathExtension = [url.pathExtension lowercaseString];
+    if ([pathExtension isEqualToString:@"mkv"])
+    {
+        MIMEType = [NSString stringWithFormat:@"%@/%@", kVideo, pathExtension];
+    }
+    else if ([pathExtension isEqualToString:@"ass"]
+             || [pathExtension isEqualToString:@"ssa"]
+             || [pathExtension isEqualToString:@"srt"])
+    {
+        MIMEType = [NSString stringWithFormat:@"%@/%@", kSubtitles, pathExtension];
+    }
+    else
+    {
+        // https://stackoverflow.com/questions/41219416/get-mime-type-from-nsurl
+        CFStringRef fileExtension = (__bridge CFStringRef)[url pathExtension];
+        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
+        CFStringRef cfMIMEType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
+        CFRelease(UTI);
+        
+        MIMEType = (__bridge_transfer NSString *)cfMIMEType;
+    }
+        
+    return [MIMEType hasPrefix:kVideo]
+    || [MIMEType hasPrefix:kSubtitles];
 }
 
 @end
