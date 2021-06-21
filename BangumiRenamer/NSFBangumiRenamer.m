@@ -53,7 +53,7 @@ NSUInteger g_seriesCount = 0;
                 // 所有 pattern 都识别不出文件名中的剧集数，报错
                 if (innerIdx == patterns.count - 1)
                 {
-                    printf("Could not find series number from file: %s\n", [fileURL.lastPathComponent cStringUsingEncoding:NSUTF8StringEncoding]);
+                    printf("无法从文件名 %s 中识别出集数\n", [fileURL.lastPathComponent cStringUsingEncoding:NSUTF8StringEncoding]);
                     *innerStop = YES;
                 }
             }
@@ -195,7 +195,8 @@ NSUInteger g_seriesCount = 0;
                                              options:0
                                                range:NSMakeRange(0, fileName.length)];
     
-    if (range.location != NSNotFound)
+    if (range.location != NSNotFound
+        && range.length > 0)
     {
         NSString *string = [fileName substringWithRange:range];
         // 1.4：原本的做法是
@@ -216,13 +217,17 @@ NSUInteger g_seriesCount = 0;
                 *stop = YES;
             }
         }];
-        seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
         
-        NSString *correctFileName = seriesDict[seriesNumber];
-        correctFileName = [self legalizeIfNeeded:correctFileName];
-        if (correctFileName.length > 0)
+        if (seriesNumber.length > 0)
         {
-            newFileName = correctFileName;
+            seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
+            
+            NSString *correctFileName = seriesDict[seriesNumber];
+            correctFileName = [self legalizeIfNeeded:correctFileName];
+            if (correctFileName.length > 0)
+            {
+                newFileName = correctFileName;
+            }
         }
     }
     
@@ -327,7 +332,7 @@ NSUInteger g_seriesCount = 0;
         
         MIMEType = (__bridge_transfer NSString *)cfMIMEType;
     }
-        
+    
     return [MIMEType hasPrefix:kVideo]
     || [MIMEType hasPrefix:kSubtitles];
 }
