@@ -52,15 +52,19 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-s /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/&#x4e3a;&#x7f8e;&#x597d;&#x7684;&#x4e16;&#x754c;&#x732e;&#x4e0a;&#x795d;&#x798f;/S1/source.txt"
+            argument = "-s /Users/nsfish/Downloads/source.txt"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/&#x4e3a;&#x7f8e;&#x597d;&#x7684;&#x4e16;&#x754c;&#x732e;&#x4e0a;&#x795d;&#x798f;/S1"
+            argument = "-d /Users/nsfish/Downloads"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-p /Volumes/ZYAN/&#x89c6;&#x9891;/&#x52a8;&#x6f2b;/pattern.txt"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-se &quot;&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

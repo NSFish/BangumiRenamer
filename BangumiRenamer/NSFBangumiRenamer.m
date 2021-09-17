@@ -17,6 +17,7 @@ NSUInteger g_seriesCount = 0;
 + (NSArray<NSString *> *)renameFilesIn:(NSURL *)directoryURL
                             withSource:(NSURL *)sourceFileURL
                                pattern:(NSURL *)patternFileURL
+                     specificExtension:(nullable NSString *)specificExtension
                                 dryrun:(BOOL)dryrun
 {
     NSMutableArray<NSString *> *fileNames = [NSMutableArray array];
@@ -27,7 +28,8 @@ NSUInteger g_seriesCount = 0;
     NSArray<NSString *> *patterns = [content componentsSeparatedByString:@"\n"];
     
     NSDictionary<NSString*, NSString*> *seriesDict = [NSFBangumiRenamer seriesFrom:sourceFileURL patterns:patterns];
-    NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL];
+    NSArray<NSURL *> *filesToBeRenamed = [NSFBangumiRenamer filesToBeRenamedIn:directoryURL
+                                                             specificExtension:specificExtension];
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
@@ -148,6 +150,7 @@ NSUInteger g_seriesCount = 0;
 }
 
 + (NSArray<NSURL *> *)filesToBeRenamedIn:(NSURL *)destDirectoryURL
+                       specificExtension:(nullable NSString *)specificExtension
 {
     NSMutableArray<NSURL *> *filesToBeRenamed = [NSMutableArray array];
     
@@ -157,7 +160,7 @@ NSUInteger g_seriesCount = 0;
     NSDirectoryEnumerator *enumerator = [fileManager
                                          enumeratorAtURL:destDirectoryURL
                                          includingPropertiesForKeys:@[NSURLIsDirectoryKey]
-                                         options:0
+                                         options:NSDirectoryEnumerationSkipsPackageDescendants | NSDirectoryEnumerationSkipsHiddenFiles
                                          errorHandler:^BOOL(NSURL *url, NSError *error) {
         return YES;
     }];
@@ -168,6 +171,14 @@ NSUInteger g_seriesCount = 0;
         NSNumber *isDirectory = nil;
         if (![url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
             // handle error
+        }
+        if (specificExtension)
+        {
+            NSString *pathExtension = [url.pathExtension lowercaseString];
+            if ([pathExtension isEqualToString:specificExtension])
+            {
+                [filesToBeRenamed addObject:url];
+            }
         }
         else if (![isDirectory boolValue])
         {
@@ -300,7 +311,6 @@ NSUInteger g_seriesCount = 0;
 {
     return [[string componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
 }
-
 
 // 根据 MIMEType 过滤掉非视频和字幕文件
 // .DS_Store 之类的隐藏文件也在其中，无须再单独处理

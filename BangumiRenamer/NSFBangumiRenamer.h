@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSArray<NSString *> *)renameFilesIn:(NSURL *)directoryURL
                             withSource:(NSURL *)sourceFileURL
                                pattern:(NSURL *)patternFileURL
+                     specificExtension:(nullable NSString *)specificExtension
                                 dryrun:(BOOL)dryrun;
 
 @end

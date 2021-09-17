@@ -18,6 +18,7 @@ int main(int argc, const char * argv[]) {
             printf("    -s, -source       file that holds the correct names\n");
             printf("    -d, -directory    directory that contains files you wanna rename\n");
             printf("    -p, -pattern      file that holds regular expressions that identifie the serial number of files to be renamed\n");
+            printf("    -se, -specific-extension 指定要处理的文件扩展名，要处理文件夹则传入\"");
             printf("\n");
             
             return 0;
@@ -26,6 +27,7 @@ int main(int argc, const char * argv[]) {
         NSString *sourceFilePath = nil;
         NSString *destDirectoryPath = nil;
         NSString *patternFilePath = nil;
+        NSString *specificExtension = nil;
         
         for (NSUInteger i = 0; i < argc; i++)
         {
@@ -44,6 +46,11 @@ int main(int argc, const char * argv[]) {
                      && (i + 1 < argc))
             {
                 patternFilePath = [NSString stringWithUTF8String:argv[i + 1]];
+            }
+            else if ([string isEqualToString:@"-se"]
+                     && (i + 1 < argc))
+            {
+                specificExtension = [NSString stringWithUTF8String:argv[i + 1]];
             }
         }
         
@@ -101,6 +108,7 @@ int main(int argc, const char * argv[]) {
         [NSFBangumiRenamer renameFilesIn:destDirectoryURL
                               withSource:sourceFileURL
                                  pattern:patternFileURL
+                       specificExtension:specificExtension
                                   dryrun:NO];
     }
     
