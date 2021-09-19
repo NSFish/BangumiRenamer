@@ -18,8 +18,8 @@ int main(int argc, const char * argv[]) {
             printf("    -s, -source       file that holds the correct names\n");
             printf("    -d, -directory    directory that contains files you wanna rename\n");
             printf("    -p, -pattern      file that holds regular expressions that identifie the serial number of files to be renamed\n");
-            printf("    -se, -specific-extension 指定要处理的文件扩展名，要处理文件夹则传入\"");
-            printf("\n");
+            printf("    -se, -specific-extension 指定要处理的文件扩展名，要处理文件夹则传入\n");
+            printf("    --order 按文件排序用 source.txt 中的文件名一一命名，即使从文件名中提取的序列号对不上\n");
             
             return 0;
         }
@@ -28,6 +28,7 @@ int main(int argc, const char * argv[]) {
         NSString *destDirectoryPath = nil;
         NSString *patternFilePath = nil;
         NSString *specificExtension = nil;
+        NSString *orderString = nil;
         
         for (NSUInteger i = 0; i < argc; i++)
         {
@@ -52,6 +53,11 @@ int main(int argc, const char * argv[]) {
             {
                 specificExtension = [NSString stringWithUTF8String:argv[i + 1]];
             }
+            else if ([string isEqualToString:@"--order"])
+            {
+                orderString = @"YES";
+            }
+            
         }
         
         BOOL inputInvalid = NO;
@@ -100,6 +106,8 @@ int main(int argc, const char * argv[]) {
             return 0;
         }
         
+        BOOL order = orderString.length > 0;
+        
         // 转换成 NSURL
         NSURL *sourceFileURL = [NSURL fileURLWithPath:sourceFilePath isDirectory:NO];
         NSURL *destDirectoryURL = [NSURL fileURLWithPath:destDirectoryPath isDirectory:YES];
@@ -109,6 +117,7 @@ int main(int argc, const char * argv[]) {
                               withSource:sourceFileURL
                                  pattern:patternFileURL
                        specificExtension:specificExtension
+                                   order:order
                                   dryrun:NO];
     }
     

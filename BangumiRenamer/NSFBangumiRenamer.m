@@ -18,6 +18,7 @@ NSUInteger g_seriesCount = 0;
                             withSource:(NSURL *)sourceFileURL
                                pattern:(NSURL *)patternFileURL
                      specificExtension:(nullable NSString *)specificExtension
+                                 order:(BOOL)order
                                 dryrun:(BOOL)dryrun
 {
     NSMutableArray<NSString *> *fileNames = [NSMutableArray array];
@@ -33,7 +34,7 @@ NSUInteger g_seriesCount = 0;
     
     [filesToBeRenamed enumerateObjectsUsingBlock:^(NSURL *fileURL, NSUInteger idx, BOOL *stop) {
         [patterns enumerateObjectsUsingBlock:^(NSString *pattern, NSUInteger innerIdx, BOOL *innerStop) {
-            NSString *newFileName = [self figureOutNewNameOfFile:fileURL pattern:pattern seriesDict:seriesDict];
+            NSString *newFileName = [self figureOutNewNameOfFile:fileURL pattern:pattern seriesDict:seriesDict order:order];
             if (newFileName)
             {
                 if (dryrun)
@@ -196,7 +197,10 @@ NSUInteger g_seriesCount = 0;
     return filesToBeRenamed;
 }
 
-+ (nullable NSString *)figureOutNewNameOfFile:(NSURL *)fileURL pattern:(NSString *)pattern seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
++ (nullable NSString *)figureOutNewNameOfFile:(NSURL *)fileURL
+                                      pattern:(NSString *)pattern
+                                   seriesDict:(NSDictionary<NSString*, NSString*> *)seriesDict
+                                        order:(BOOL)order
 {
     NSString *newFileName = nil;
     NSString *fileName = [fileURL lastPathComponent];
@@ -231,6 +235,19 @@ NSUInteger g_seriesCount = 0;
         
         if (seriesNumber.length > 0)
         {
+            // 以 JOJO 的《石之海》为例
+            // source.txt 里是 64-80 卷，但是下载来的东立的漫画文件名是 01-17
+            // 则需要取出 source.txt 中的基数，然后 apply 到最终的 serialNumber 上
+            if (order)
+            {
+                NSArray<NSString *> *keys = [seriesDict.allKeys sortedArrayUsingComparator:^NSComparisonResult(NSString *left, NSString *right) {
+                    return left.integerValue > right.integerValue;
+                }];
+                NSInteger basic = keys.firstObject.integerValue;
+                NSInteger temp = seriesNumber.intValue;
+                seriesNumber = @(temp + basic - 1).stringValue;
+            }
+            
             seriesNumber = [self fillInSeriesNumberIfNeeded:seriesNumber];
             
             NSString *correctFileName = seriesDict[seriesNumber];

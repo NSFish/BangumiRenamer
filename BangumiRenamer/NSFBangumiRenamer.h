@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
                             withSource:(NSURL *)sourceFileURL
                                pattern:(NSURL *)patternFileURL
                      specificExtension:(nullable NSString *)specificExtension
+                                 order:(BOOL)order
                                 dryrun:(BOOL)dryrun;
 
 @end
