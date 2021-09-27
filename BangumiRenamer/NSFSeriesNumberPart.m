@@ -45,4 +45,33 @@
     return [[NSFSeriesNumberPart alloc] initWithContent:content range:range];
 }
 
+#pragma mark - Equality
+- (BOOL)isEqualToPart:(NSFSeriesNumberPart *)part
+{
+    if (!part)
+    {
+        return NO;
+    }
+    
+    BOOL haveEqualContents = (!self.content && !part.content) || [self.content isEqualToString:part.content];
+    BOOL haveEqualRanges = NSEqualRanges(self.range, part.range);
+    
+    return haveEqualContents && haveEqualRanges;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object)
+    {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:[NSFSeriesNumberPart class]])
+    {
+        return NO;
+    }
+    
+    return [self isEqualToPart:(NSFSeriesNumberPart *)object];
+}
+
 @end

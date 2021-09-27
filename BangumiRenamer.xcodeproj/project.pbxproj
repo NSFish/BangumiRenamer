@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5175CC54B3B21B1F2B31B995 /* libPods-UnitTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFE54475D62E711303D1F76D /* libPods-UnitTest.a */; };
+		7042C15F270195A000D9F9AF /* NSString+NSFExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7042C15D270195A000D9F9AF /* NSString+NSFExt.m */; };
+		7042C1622701B7BE00D9F9AF /* NSURL+NSFExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7042C1612701B7BE00D9F9AF /* NSURL+NSFExt.m */; };
 		7043885C245F921D007D4D15 /* NSFSeriesNumberPart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */; };
 		7082F80C24830243005793CC /* UnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7082F80B24830243005793CC /* UnitTest.swift */; };
 		7082F81124830294005793CC /* NSFBangumiRenamer.h in Sources */ = {isa = PBXBuildFile; fileRef = 70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */; };
@@ -31,6 +33,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7042C15D270195A000D9F9AF /* NSString+NSFExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NSFExt.m"; sourceTree = "<group>"; };
+		7042C15E270195A000D9F9AF /* NSString+NSFExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NSFExt.h"; sourceTree = "<group>"; };
+		7042C1602701B7BE00D9F9AF /* NSURL+NSFExt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+NSFExt.h"; sourceTree = "<group>"; };
+		7042C1612701B7BE00D9F9AF /* NSURL+NSFExt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NSFExt.m"; sourceTree = "<group>"; };
 		7043885A245F921D007D4D15 /* NSFSeriesNumberPart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFSeriesNumberPart.h; sourceTree = "<group>"; };
 		7043885B245F921D007D4D15 /* NSFSeriesNumberPart.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSFSeriesNumberPart.m; sourceTree = "<group>"; };
 		7082F80924830243005793CC /* UnitTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +88,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		7042C15C270195A000D9F9AF /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				7042C15E270195A000D9F9AF /* NSString+NSFExt.h */,
+				7042C15D270195A000D9F9AF /* NSString+NSFExt.m */,
+				7042C1602701B7BE00D9F9AF /* NSURL+NSFExt.h */,
+				7042C1612701B7BE00D9F9AF /* NSURL+NSFExt.m */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		7082F80A24830243005793CC /* UnitTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +140,7 @@
 		70A43FA923F34CEC00FD3EAE /* BangumiRenamer */ = {
 			isa = PBXGroup;
 			children = (
+				7042C15C270195A000D9F9AF /* Extension */,
 				70A43FAA23F34CEC00FD3EAE /* main.m */,
 				70A43FB123F34D2600FD3EAE /* NSFBangumiRenamer.h */,
 				70A43FB223F34D2600FD3EAE /* NSFBangumiRenamer.m */,
@@ -260,8 +278,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A43FAB23F34CEC00FD3EAE /* main.m in Sources */,
+				7042C1622701B7BE00D9F9AF /* NSURL+NSFExt.m in Sources */,
 				7043885C245F921D007D4D15 /* NSFSeriesNumberPart.m in Sources */,
 				70A43FB323F34D2600FD3EAE /* NSFBangumiRenamer.m in Sources */,
+				7042C15F270195A000D9F9AF /* NSString+NSFExt.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

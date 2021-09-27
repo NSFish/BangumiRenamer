@@ -17,6 +17,7 @@ int main(int argc, const char * argv[]) {
             printf("options:\n");
             printf("    -s, -source       file that holds the correct names\n");
             printf("    -d, -directory    directory that contains files you wanna rename\n");
+            printf("    -r, -rule         包含特殊规则的文件，比如如何命名剧集数相同的文件\n");
             printf("    -p, -pattern      file that holds regular expressions that identifie the serial number of files to be renamed\n");
             printf("    -se, -specific-extension 指定要处理的文件扩展名，要处理文件夹则传入\n");
             printf("    --order 按文件排序用 source.txt 中的文件名一一命名，即使从文件名中提取的序列号对不上\n");
@@ -27,6 +28,7 @@ int main(int argc, const char * argv[]) {
         NSString *sourceFilePath = nil;
         NSString *destDirectoryPath = nil;
         NSString *patternFilePath = nil;
+        NSString *ruleFilePath = nil;
         NSString *specificExtension = nil;
         NSString *orderString = nil;
         
@@ -42,6 +44,11 @@ int main(int argc, const char * argv[]) {
                      && (i + 1 < argc))
             {
                 destDirectoryPath = [NSString stringWithUTF8String:argv[i + 1]];
+            }
+            else if ([string isEqualToString:@"-r"]
+                     && (i + 1 < argc))
+            {
+                ruleFilePath = [NSString stringWithUTF8String:argv[i + 1]];
             }
             else if ([string isEqualToString:@"-p"]
                      && (i + 1 < argc))
@@ -112,10 +119,12 @@ int main(int argc, const char * argv[]) {
         NSURL *sourceFileURL = [NSURL fileURLWithPath:sourceFilePath isDirectory:NO];
         NSURL *destDirectoryURL = [NSURL fileURLWithPath:destDirectoryPath isDirectory:YES];
         NSURL *patternFileURL = [NSURL fileURLWithPath:patternFilePath isDirectory:NO];
+        NSURL *ruleFileURL = [NSURL fileURLWithPath:ruleFilePath isDirectory:NO];
         
         [NSFBangumiRenamer renameFilesIn:destDirectoryURL
                               withSource:sourceFileURL
                                  pattern:patternFileURL
+                                    rule:ruleFileURL
                        specificExtension:specificExtension
                                    order:order
                                   dryrun:NO];

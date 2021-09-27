@@ -52,11 +52,15 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-s &quot;/Volumes/ZYAN/&#x6f2b;&#x753b;/&#x65e5;&#x6f2b;/JOJO &#x7684;&#x5947;&#x5999;&#x5192;&#x9669;/06 &#x77f3;&#x4e4b;&#x6d77;/source.txt&quot;"
+            argument = "-d &quot;/Users/nsfish/Downloads/a&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d &quot;/Volumes/ZYAN/&#x6f2b;&#x753b;/&#x65e5;&#x6f2b;/JOJO &#x7684;&#x5947;&#x5999;&#x5192;&#x9669;/06 &#x77f3;&#x4e4b;&#x6d77;&quot;"
+            argument = "-s &quot;/Users/nsfish/Downloads/a/source.txt&quot;"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-r &quot;/Users/nsfish/Downloads/a/rule.txt&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -64,12 +68,12 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-se &quot;zip&quot;"
+            argument = "-se &quot;&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--order"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
